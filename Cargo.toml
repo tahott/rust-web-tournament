@@ -10,6 +10,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 yew = "0.19"
+yew-router = "0.16"
 wasm-bindgen = { version = "0.2.80", features = ["serde-serialize"] }
 gloo = "0.6"
 js-sys = "0.3"

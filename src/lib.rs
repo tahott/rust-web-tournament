@@ -1,6 +1,7 @@
 mod app;
 mod page;
 mod component;
+mod route;
 
 use wasm_bindgen::prelude::*;
 
