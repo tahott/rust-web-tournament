@@ -1,12 +1,9 @@
 use std::{str::FromStr, rc::Rc};
 
-use gloo::utils::document;
 use serde::Serialize;
-use wasm_bindgen::JsCast;
-use web_sys::{HtmlSelectElement, HtmlInputElement};
 use yew::prelude::*;
 
-use crate::component::TournamentModal;
+use crate::{component::TournamentModal};
 
 #[derive(Serialize)]
 enum TournamentType {
@@ -74,30 +71,6 @@ pub fn main() -> Html {
     }
   };
 
-  let change_modal_state = {
-    let modal_state_handle = modal_state_handle.clone();
-
-    if modal_state_handle.is_open == false {
-      Callback::from(move |_| {
-        modal_state_handle.dispatch(StateAction::Open);
-      })
-    } else {
-      Callback::from(move |_| {
-        let val = parse_element::<HtmlSelectElement>("tournament_type").value();
-        let participants = parse_element::<HtmlInputElement>("participants").value_as_number();
-        let title = parse_element::<HtmlInputElement>("title").value();
-
-        let tournament = TournamentState {
-          tournament_type: TournamentType::from_str(&val).unwrap(),
-          participants: participants as u8,
-          title,
-        };
-
-        modal_state_handle.dispatch(StateAction::Close);
-      })
-    }
-  };
-
   html!(
     <div class="py-2">
       <div class="container mx-auto h-screen">
@@ -107,13 +80,8 @@ pub fn main() -> Html {
             {"토너먼트 생성"}
           </button>
         </div>
-        <TournamentModal state={modal_state_handle.is_open} modal_state_handle={change_modal_state} />
-        // Grid
+        <TournamentModal state={modal_state_handle.is_open} />
       </div>
     </div>
   )
-}
-
-fn parse_element<T: wasm_bindgen::JsCast>(id: &str) -> T {
-  document().get_element_by_id(id).unwrap().dyn_into::<T>().unwrap()
 }
