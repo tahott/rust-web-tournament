@@ -7,6 +7,7 @@ fn switch(routes: &Route) -> Html {
   match routes {
     Route::MainPage => html! { <Main /> },
     Route::TournamentPage { id: _ } => html! { <Tournament /> },
+    Route::NotFound => html! { <div class="container mx-auto py-2">{"Not Found!!"}</div> },
   }
 }
 

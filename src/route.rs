@@ -6,4 +6,7 @@ pub enum Route {
   MainPage,
   #[at("/tournament/:id")]
   TournamentPage { id: String },
+  #[not_found]
+  #[at("/404")]
+  NotFound,
 }
