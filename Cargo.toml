@@ -35,4 +35,5 @@ version = "1.0.0"
 features = [
   "v4",
   "serde",
+  "js",
 ]

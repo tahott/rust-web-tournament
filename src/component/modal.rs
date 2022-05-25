@@ -1,45 +1,17 @@
 use std::str::FromStr;
 
 use gloo::utils::document;
-use serde::Serialize;
+use uuid::Uuid;
 use wasm_bindgen::JsCast;
 use web_sys::{HtmlSelectElement, HtmlInputElement};
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::route::{Route};
+use crate::{route::{Route}, types::{TournamentState, TournamentType}};
 
 #[derive(Properties, PartialEq)]
 pub struct ModalProps {
   pub state: bool,
-}
-
-#[derive(Serialize)]
-enum TournamentType {
-  #[serde(rename="tournament")]
-  Tournament,
-  #[serde(rename="swissLeague")]
-  SwissLeague,
-}
-
-impl FromStr for TournamentType {
-  type Err = ();
-
-  fn from_str(s: &str) -> Result<Self, Self::Err> {
-    match s {
-      "tournament" => Ok(TournamentType::Tournament),
-      "swiss_league" => Ok(TournamentType::SwissLeague),
-      _ => Err(()),
-    }
-  }
-}
-
-#[derive(Serialize)]
-struct TournamentState {
-  #[serde(rename="tournamentType")]
-  tournament_type: TournamentType,
-  participants: u8,
-  title: String,
 }
 
 #[function_component(TournamentModal)]
@@ -52,12 +24,13 @@ pub fn Modal(props: &ModalProps) -> Html {
       let title = parse_element::<HtmlInputElement>("title").value();
   
       let tournament = TournamentState {
+        id: Uuid::new_v4(),
         tournament_type: TournamentType::from_str(&val).unwrap(),
         participants: participants as u8,
         title,
       };
   
-      history.push_with_state(Route::TournamentPage { id: "abc".to_string() }, tournament).unwrap()
+      history.push_with_state(Route::TournamentPage { id: Uuid::new_v4() }, tournament).unwrap()
     })
   };
 

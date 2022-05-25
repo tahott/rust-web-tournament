@@ -1,8 +1,11 @@
 use std::{str::FromStr, rc::Rc};
 
+use uuid::Uuid;
 use serde::Serialize;
 use yew::prelude::*;
+use yew_router::components::Link;
 
+use crate::route::Route;
 use crate::{component::TournamentModal};
 
 #[derive(Serialize)]
@@ -80,6 +83,11 @@ pub fn main() -> Html {
             {"토너먼트 생성"}
           </button>
         </div>
+        <Link<Route> to={Route::TournamentPage { id: Uuid::new_v4() }}>
+          <div class="px-6 py-4">
+            <div class="font-bold text-xl mb-2">{"title"}</div>
+          </div>
+        </Link<Route>>
         <TournamentModal state={modal_state_handle.is_open} />
       </div>
     </div>
