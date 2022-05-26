@@ -2,7 +2,15 @@
   {
     "id": "dee91c81-598f-48b7-a20e-7b5246f4aa10",
     "participants": 16,
-    "title": "대회",
-    "tournamentType": "tournament"
+    "title": "제1회 가위바위보 대회",
+    "tournamentType": "tournament",
+    "status": "prepare"
+  },
+  {
+    "id": "160323f3-044c-444c-b98d-b69b5677f10b",
+    "participants": 32,
+    "title": "제0x1회 코드 골프 대회",
+    "tournamentType": "tournament",
+    "status": "prepare"
   }
 ]

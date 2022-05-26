@@ -1,40 +1,10 @@
-use std::{str::FromStr, rc::Rc};
-
-use uuid::Uuid;
-use serde::Serialize;
+use std::{rc::Rc};
 use yew::prelude::*;
 use yew_router::components::Link;
 
+use crate::api::get_tournament_list;
 use crate::route::Route;
 use crate::{component::TournamentModal};
-
-#[derive(Serialize)]
-enum TournamentType {
-  #[serde(rename="tournament")]
-  Tournament,
-  #[serde(rename="swissLeague")]
-  SwissLeague,
-}
-
-impl FromStr for TournamentType {
-  type Err = ();
-
-  fn from_str(s: &str) -> Result<Self, Self::Err> {
-    match s {
-      "tournament" => Ok(TournamentType::Tournament),
-      "swiss_league" => Ok(TournamentType::SwissLeague),
-      _ => Err(()),
-    }
-  }
-}
-
-#[derive(Serialize)]
-struct TournamentState {
-  #[serde(rename="tournamentType")]
-  tournament_type: TournamentType,
-  participants: u8,
-  title: String,
-}
 
 enum StateAction {
   Open,
@@ -58,6 +28,7 @@ impl Reducible for ModalState {
 
 #[function_component(Main)]
 pub fn main() -> Html {
+  let tournament = use_state(|| vec![]);
   let modal_state_handle = use_reducer(|| ModalState { is_open: false });
   
   let onclick = {
@@ -74,6 +45,25 @@ pub fn main() -> Html {
     }
   };
 
+  use_effect_with_deps({
+    let tournament = tournament.clone();
+
+    move |_| {
+      wasm_bindgen_futures::spawn_local(async move {
+        let tournament_summary = get_tournament_list().await.unwrap();
+        
+        tournament.set(tournament_summary.clone().iter().map(|t| {
+          html! {
+            <Link<Route> to={Route::TournamentPage { id: t.id }}>
+              <div class="font-bold text-xl mb-2">{t.clone().title}</div>
+            </Link<Route>>
+          }
+        }).collect::<Vec<Html>>());
+      });
+      || ()
+    }
+  }, ());
+
   html!(
     <div class="py-2">
       <div class="container mx-auto h-screen">
@@ -83,11 +73,7 @@ pub fn main() -> Html {
             {"토너먼트 생성"}
           </button>
         </div>
-        <Link<Route> to={Route::TournamentPage { id: Uuid::new_v4() }}>
-          <div class="px-6 py-4">
-            <div class="font-bold text-xl mb-2">{"title"}</div>
-          </div>
-        </Link<Route>>
+        {(*tournament).clone()}
         <TournamentModal state={modal_state_handle.is_open} />
       </div>
     </div>

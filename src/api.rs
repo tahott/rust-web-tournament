@@ -1,27 +1,12 @@
 use core::fmt;
 use std::{fmt::{Formatter, Debug, Display}, error::Error};
 
-use serde::{Deserialize};
 use uuid::Uuid;
 use wasm_bindgen::{JsValue, JsCast};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{RequestInit, RequestMode, Request, Response};
 
-use crate::types::TournamentState;
-
-#[derive(Deserialize)]
-pub enum TournamentStatus {
-  Prepare,
-  InProgress,
-  Done,
-}
-
-#[derive(Deserialize)]
-pub struct TournamentSummary {
-  id: Uuid,
-  title: String,
-  status: TournamentStatus,
-}
+use crate::types::{TournamentState, TournamentSummary};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct FetchError {
@@ -47,7 +32,7 @@ pub async fn get_tournament_list() -> Result<Vec<TournamentSummary>, FetchError>
   opts.method("GET");
   opts.mode(RequestMode::Cors);
 
-  let request = Request::new_with_str_and_init("", &opts)?;
+  let request = Request::new_with_str_and_init("../products/tournament.json", &opts)?;
 
   let window = gloo::utils::window();
   let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
