@@ -4,7 +4,7 @@ use yew_router::components::Link;
 
 use crate::api::get_tournament_list;
 use crate::route::Route;
-use crate::{component::TournamentModal};
+use crate::{component::{TournamentModal, TournamentCard}};
 
 enum StateAction {
   Open,
@@ -55,7 +55,7 @@ pub fn main() -> Html {
         tournament.set(tournament_summary.clone().iter().map(|t| {
           html! {
             <Link<Route> to={Route::TournamentPage { id: t.id }}>
-              <div class="font-bold text-xl mb-2">{t.clone().title}</div>
+              <TournamentCard title={t.title.clone()} status={t.status.clone()} />
             </Link<Route>>
           }
         }).collect::<Vec<Html>>());
@@ -73,7 +73,9 @@ pub fn main() -> Html {
             {"토너먼트 생성"}
           </button>
         </div>
-        {(*tournament).clone()}
+        <div class="flex flex-wrap gap-4">
+          {(*tournament).clone()}
+        </div>
         <TournamentModal state={modal_state_handle.is_open} />
       </div>
     </div>

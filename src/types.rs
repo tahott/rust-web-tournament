@@ -32,7 +32,7 @@ pub struct TournamentState {
   pub title: String,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub enum TournamentStatus {
   #[serde(rename="prepare")]
   Prepare,
