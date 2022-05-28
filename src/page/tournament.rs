@@ -57,7 +57,7 @@ pub fn tournament() -> Html {
   }, ());
 
   html!(
-    <div class="container mx-auto bg-sky-500">
+    <div class="container mx-auto m-2 p-4 bg-sky-100">
       <div class={format!("grid grid-cols-[repeat({},_minmax(0,1fr))] gap-4", *cols)}>
         {(*round).clone()}
       </div>
