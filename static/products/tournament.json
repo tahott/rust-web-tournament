@@ -4,13 +4,89 @@
     "participants": 16,
     "title": "제1회 가위바위보 대회",
     "tournamentType": "tournament",
-    "status": "in_progress"
+    "status": "in_progress",
+    "matches": {
+      "round_of_16": {},
+      "quarter_final": {},
+      "semi_final": {},
+      "final": {}
+    }
   },
   {
     "id": "160323f3-044c-444c-b98d-b69b5677f10b",
-    "participants": 32,
+    "participants": 16,
     "title": "제0x1회 코드 골프 대회",
     "tournamentType": "tournament",
-    "status": "prepare"
+    "status": "done",
+    "matches": {
+      "round_of_16": {
+        "0": [
+          { "name": "김아무개" },
+          { "name": "이아무개" }
+        ],
+        "1": [
+          { "name": "박아무개" },
+          { "name": "최아무개" }
+        ],
+        "2": [
+          { "name": "정아무개" },
+          { "name": "조아무개" }
+        ],
+        "3": [
+          { "name": "강아무개" },
+          { "name": "윤아무개" }
+        ],
+        "4": [
+          { "name": "장아무개" },
+          { "name": "임아무개" }
+        ],
+        "5": [
+          { "name": "한아무개" },
+          { "name": "전아무개" }
+        ],
+        "6": [
+          { "name": "권아무개" },
+          { "name": "신아무개" }
+        ],
+        "7": [
+          { "name": "서아무개" },
+          { "name": "오아무개" }
+        ]
+      },
+      "quarter_final": {
+        "0": [
+          { "name": "김아무개" },
+          { "name": "최아무개" }
+        ],
+        "1": [
+          { "name": "정아무개" },
+          { "name": "윤아무개" }
+        ],
+        "2": [
+          { "name": "임아무개" },
+          { "name": "한아무개" }
+        ],
+        "3": [
+          { "name": "신아무개" },
+          { "name": "오아무개" }
+        ]
+      },
+      "semi_final": {
+        "0": [
+          { "name": "김아무개" },
+          { "name": "윤아무개" }
+        ],
+        "1": [
+          { "name": "임아무개" },
+          { "name": "신아무개" }
+        ]
+      },
+      "final": {
+        "0": [
+          { "name": "김아무개" },
+          { "name": "신아무개" }
+        ]
+      }
+    }
   }
 ]

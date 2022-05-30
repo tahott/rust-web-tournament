@@ -5,7 +5,7 @@ use uuid::{Uuid};
 use yew::prelude::*;
 use yew_router::{hooks::{use_location}, history::Location};
 
-use crate::{component::Round, api::{get_tournament_detail}, types::{TournamentState, TournamentType}};
+use crate::{component::Round, api::{get_tournament_detail}, types::{TournamentState, TournamentType, MatchEnums}};
 
 #[derive(Properties, PartialEq, Deserialize, Serialize)]
 pub struct Props {
@@ -26,7 +26,13 @@ fn to_round(n: u8, count: u8, mut v: Vec<u8>) -> Vec<u8> {
 
 #[function_component(Tournament)]
 pub fn tournament() -> Html {
-  let tournament = use_state(|| TournamentState { id: Uuid::new_v4(), participants: 0, title: String::from("title"), tournament_type: TournamentType::Tournament});
+  let tournament = use_state(|| TournamentState {
+    id: Uuid::new_v4(),
+    participants: 0,
+    title: String::from("title"),
+    tournament_type: TournamentType::Tournament,
+    matches: None,
+  });
   let cols = use_state(|| 0);
   let round = use_state(|| vec![]);
   let location = use_location().unwrap();
@@ -47,8 +53,17 @@ pub fn tournament() -> Html {
         let cols_vec = to_round(tournament_state.participants, 1, vec![]);
         cols.set(cols_vec.len() as u8);
         round.set(cols_vec.clone().iter().map(|r| {
+          let m = tournament_state.matches.clone().unwrap();
+          let a = match r {
+            8 => m.get(&MatchEnums::RoundOf16).unwrap().clone(),
+            4 => m.get(&MatchEnums::QuarterFinal).unwrap().clone(),
+            2 => m.get(&MatchEnums::SemiFinal).unwrap().clone(),
+            1 => m.get(&MatchEnums::Final).unwrap().clone(),
+            _ => None,
+          }.unwrap();
+
           html! {
-            <Round matches={*r} />
+            <Round rounds={*r} matches={a.clone()} />
           }
         }).collect::<Vec<Html>>());
       });

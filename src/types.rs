@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{str::FromStr, collections::{HashMap}};
 
 use serde::{Serialize, Deserialize};
 use uuid::Uuid;
@@ -23,6 +23,18 @@ impl FromStr for TournamentType {
   }
 }
 
+#[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Hash)]
+pub enum MatchEnums {
+  #[serde(rename="round_of_16")]
+  RoundOf16,
+  #[serde(rename="quarter_final")]
+  QuarterFinal,
+  #[serde(rename="semi_final")]
+  SemiFinal,
+  #[serde(rename="final")]
+  Final,
+}
+
 #[derive(Serialize, Deserialize, Clone)]
 pub struct TournamentState {
   pub id: Uuid,
@@ -30,6 +42,7 @@ pub struct TournamentState {
   pub tournament_type: TournamentType,
   pub participants: u8,
   pub title: String,
+  pub matches: Option<HashMap<MatchEnums, Option<HashMap<u8, Vec<Player>>>>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
@@ -60,4 +73,19 @@ pub struct TournamentSummary {
   pub id: Uuid,
   pub title: String,
   pub status: TournamentStatus,
+}
+
+#[derive(Hash, PartialEq, Eq, Clone, Serialize, Deserialize)]
+pub struct Player {
+  pub name: String,
+}
+
+impl Player {
+  pub fn new(name: &str) -> Option<Player> {
+    if name.len() > 0 {
+      return Some(Player { name: String::from(name) })
+    } else {
+      return None
+    }
+  }
 }

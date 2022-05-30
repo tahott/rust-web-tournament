@@ -28,6 +28,7 @@ pub fn Modal(props: &ModalProps) -> Html {
         tournament_type: TournamentType::from_str(&val).unwrap(),
         participants: participants as u8,
         title,
+        matches: None,
       };
   
       history.push_with_state(Route::TournamentPage { id: Uuid::new_v4() }, tournament).unwrap()

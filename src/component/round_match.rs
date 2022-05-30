@@ -2,20 +2,7 @@ use std::collections::HashMap;
 
 use yew::prelude::*;
 
-#[derive(Hash, PartialEq, Eq)]
-pub struct Player {
-  name: String,
-}
-
-impl Player {
-  pub fn new(name: &str) -> Option<Player> {
-    if name.len() > 0 {
-      return Some(Player { name: String::from(name) })
-    } else {
-      return None
-    }
-  }
-}
+use crate::types::Player;
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
