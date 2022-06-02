@@ -5,7 +5,7 @@ use uuid::{Uuid};
 use yew::prelude::*;
 use yew_router::{hooks::{use_location}, history::Location};
 
-use crate::{component::Round, api::{get_tournament_detail}, types::{TournamentState, TournamentType, MatchEnums}};
+use crate::{component::Round, api::{get_tournament_detail}, types::{TournamentState, TournamentType, MatchEnums, Matches}};
 
 #[derive(Properties, PartialEq, Deserialize, Serialize)]
 pub struct Props {
@@ -31,7 +31,7 @@ pub fn tournament() -> Html {
     participants: 0,
     title: String::from("title"),
     tournament_type: TournamentType::Tournament,
-    matches: None,
+    matches: Matches::new(0),
   });
   let cols = use_state(|| 0);
   let round = use_state(|| vec![]);
@@ -53,14 +53,19 @@ pub fn tournament() -> Html {
         let cols_vec = to_round(tournament_state.participants, 1, vec![]);
         cols.set(cols_vec.len() as u8);
         round.set(cols_vec.clone().iter().map(|r| {
-          let m = tournament_state.matches.clone().unwrap();
+          let m = tournament_state.matches.clone();
+
           let a = match r {
-            8 => m.get(&MatchEnums::RoundOf16).unwrap().clone(),
-            4 => m.get(&MatchEnums::QuarterFinal).unwrap().clone(),
-            2 => m.get(&MatchEnums::SemiFinal).unwrap().clone(),
-            1 => m.get(&MatchEnums::Final).unwrap().clone(),
-            _ => None,
-          }.unwrap();
+            128 => (m.0).get(&MatchEnums::RoundOf256).unwrap().clone(),
+            64 => (m.0).get(&MatchEnums::RoundOf128).unwrap().clone(),
+            32 => (m.0).get(&MatchEnums::RoundOf64).unwrap().clone(),
+            16 => (m.0).get(&MatchEnums::RoundOf32).unwrap().clone(),
+            8 => (m.0).get(&MatchEnums::RoundOf16).unwrap().clone(),
+            4 => (m.0).get(&MatchEnums::QuarterFinal).unwrap().clone(),
+            2 => (m.0).get(&MatchEnums::SemiFinal).unwrap().clone(),
+            1 => (m.0).get(&MatchEnums::Final).unwrap().clone(),
+            _ => (m.0).get(&MatchEnums::Final).unwrap().clone(),
+          };
 
           html! {
             <Round rounds={*r} matches={a.clone()} />

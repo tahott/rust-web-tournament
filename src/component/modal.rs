@@ -1,13 +1,13 @@
-use std::str::FromStr;
+use std::{str::FromStr};
 
 use gloo::utils::document;
 use uuid::Uuid;
-use wasm_bindgen::JsCast;
+use wasm_bindgen::{JsCast};
 use web_sys::{HtmlSelectElement, HtmlInputElement};
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::{route::{Route}, types::{TournamentState, TournamentType}};
+use crate::{route::{Route}, types::{TournamentState, TournamentType, Matches}};
 
 #[derive(Properties, PartialEq)]
 pub struct ModalProps {
@@ -28,7 +28,7 @@ pub fn Modal(props: &ModalProps) -> Html {
         tournament_type: TournamentType::from_str(&val).unwrap(),
         participants: participants as u8,
         title,
-        matches: None,
+        matches: Matches::new(participants as u8),
       };
   
       history.push_with_state(Route::TournamentPage { id: Uuid::new_v4() }, tournament).unwrap()

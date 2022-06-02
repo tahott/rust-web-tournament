@@ -25,7 +25,7 @@ pub fn round(props: &Props) -> Html {
           if players.len() > 0 {
             players.iter().for_each(|p| {
               if p.name.len() > 0 {
-                player_hash_map.insert(Player::new(&p.name), 0);
+                player_hash_map.insert(Player::new(&(p.clone().name)), 0);
               } else {
                 player_hash_map.insert(Player::new(""), 0);
               }

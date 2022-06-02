@@ -7,18 +7,18 @@ use crate::types::Player;
 #[derive(Properties, PartialEq)]
 pub struct Props {
   pub round_match: u8,
-  pub players: HashMap<Option<Player>, u8>,
+  pub players: HashMap<Player, u8>,
 }
 
 #[function_component(RoundMatch)]
 pub fn round_match(props: &Props) -> Html {
   let players = props.players.iter().map(|player| {
-    let result = match player.0 {
-      Some(player) => html! { <div>{player.name.clone()}</div> },
-      None => html! { <input /> },
-    };
-    
-    result
+    html! {
+      <div class="flex flex-row">
+        <div class="basis-2/3">{player.0.name.clone()}</div>
+        <div class="basis-1/3">{player.1}</div>
+      </div>
+    }
   }).collect::<Vec<Html>>();
   html! {
     <div class="py-1">
