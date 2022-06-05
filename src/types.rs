@@ -85,6 +85,7 @@ pub struct TournamentState {
   pub participants: u8,
   pub title: String,
   pub matches: Matches,
+  pub status: TournamentStatus,
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
@@ -125,10 +126,5 @@ pub struct Player {
 impl Player {
   pub fn new(name: &str) -> Player {
     Player { name: String::from(name) }
-    // if name.len() > 0 {
-    //   return Some(Player { name: String::from(name) })
-    // } else {
-    //   return None
-    // }
   }
 }
