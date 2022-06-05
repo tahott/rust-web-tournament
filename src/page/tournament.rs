@@ -5,7 +5,7 @@ use uuid::{Uuid};
 use yew::prelude::*;
 use yew_router::{hooks::{use_location}, history::Location};
 
-use crate::{component::Round, api::{get_tournament_detail}, types::{TournamentState, TournamentType, MatchEnums, Matches}};
+use crate::{component::Round, api::{get_tournament_detail}, types::{TournamentState, TournamentType, MatchEnums, Matches, TournamentStatus}};
 
 #[derive(Properties, PartialEq, Deserialize, Serialize)]
 pub struct Props {
@@ -32,13 +32,16 @@ pub fn tournament() -> Html {
     title: String::from("title"),
     tournament_type: TournamentType::Tournament,
     matches: Matches::new(0),
+    status: TournamentStatus::Prepare,
   });
+  let participants = use_state(|| vec![]);
   let cols = use_state(|| 0);
   let round = use_state(|| vec![]);
   let location = use_location().unwrap();
 
   use_effect_with_deps({
     let tournament = tournament.clone();
+    let participants = participants.clone();
     let cols = cols.clone();
     let round = round.clone();
     let uuid_str = location.pathname().split("/").last().unwrap().to_owned();
@@ -47,6 +50,7 @@ pub fn tournament() -> Html {
       wasm_bindgen_futures::spawn_local(async move {
         let uuid_value = Uuid::from_str(&uuid_str).unwrap();
         let tournament_state = get_tournament_detail(uuid_value).await.unwrap();
+        let mut partial_participants = vec![];
   
         tournament.set(tournament_state.clone());
 
@@ -67,6 +71,18 @@ pub fn tournament() -> Html {
             _ => (m.0).get(&MatchEnums::Final).unwrap().clone(),
           };
 
+          let p = a.iter().flat_map(|f| {
+            let names = f.1.iter().map(|ff| {
+              ff.name.clone()
+            }).collect::<Vec<String>>();
+
+            names
+          }).collect::<Vec<String>>();
+
+          partial_participants.push(p);
+          let p = partial_participants.iter().flat_map(|f| f.iter().map(|ff| (*ff).clone())).collect::<Vec<String>>();
+          participants.set(p);
+
           html! {
             <Round rounds={*r} matches={a.clone()} />
           }
@@ -77,8 +93,17 @@ pub fn tournament() -> Html {
   }, ());
 
   html!(
-    <div class="container mx-auto m-2 p-4 bg-sky-100">
-      <div class={format!("grid grid-cols-[repeat({},_minmax(0,1fr))] gap-4", *cols)}>
+    <div class="container mx-auto m-2 p-4">
+      <div>
+        {
+          (*participants).clone().into_iter().map(|f| {
+            html! {
+              <div>{f}</div>
+            }
+          }).collect::<Vec<Html>>()
+        }
+      </div>
+      <div class={format!("grid grid-cols-[repeat({},_minmax(0,1fr))] gap-4 bg-sky-100", *cols)}>
         {(*round).clone()}
       </div>
     </div>
