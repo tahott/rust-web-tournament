@@ -77,12 +77,24 @@ impl Matches {
   }
 }
 
+#[derive(Clone, Serialize, Deserialize)]
+pub struct Pariticipant {
+  pub count: u16,
+  pub list: Vec<Option<Player>>,
+}
+
+impl Pariticipant {
+  pub fn new() -> Self {
+    Self { count: 0, list: vec![] }
+  }
+}
+
 #[derive(Serialize, Deserialize, Clone)]
 pub struct TournamentState {
   pub id: Uuid,
   #[serde(rename="tournamentType")]
   pub tournament_type: TournamentType,
-  pub participants: u16,
+  pub participant: Pariticipant,
   pub title: String,
   pub matches: Matches,
   pub status: TournamentStatus,

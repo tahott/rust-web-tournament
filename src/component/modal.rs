@@ -7,7 +7,7 @@ use web_sys::{HtmlSelectElement, HtmlInputElement};
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::{route::{Route}, types::{TournamentState, TournamentType, Matches, TournamentStatus}};
+use crate::{route::{Route}, types::{TournamentState, TournamentType, Matches, TournamentStatus, Pariticipant}};
 
 #[derive(Properties, PartialEq)]
 pub struct ModalProps {
@@ -26,7 +26,7 @@ pub fn Modal(props: &ModalProps) -> Html {
       let tournament = TournamentState {
         id: Uuid::new_v4(),
         tournament_type: TournamentType::from_str(&val).unwrap(),
-        participants: participants as u16,
+        participant: Pariticipant { count: participants as u16, list: vec![None; participants as usize] },
         title,
         matches: Matches::new(participants as u16),
         status: TournamentStatus::Prepare,

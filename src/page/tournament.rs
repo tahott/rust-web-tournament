@@ -8,22 +8,11 @@ use web_sys::{HtmlLiElement};
 use yew::prelude::*;
 use yew_router::{hooks::{use_location}, history::Location};
 
-use crate::{component::Round, api::{get_tournament_detail}, types::{TournamentState, TournamentType, MatchEnums, Matches, TournamentStatus}};
+use crate::{component::Round, api::{get_tournament_detail}, types::{TournamentState, TournamentType, MatchEnums, Matches, TournamentStatus, Pariticipant}};
 
 enum ActiveTab {
   Participant,
   Matches,
-}
-
-#[derive(Clone)]
-struct Participants {
-  list: Vec<String>,
-}
-
-impl Participants {
-  pub fn new() -> Self {
-    Self { list: vec![] }
-  }
 }
 
 #[derive(Properties, PartialEq, Deserialize, Serialize)]
@@ -47,13 +36,12 @@ fn to_round(n: u16, count: u16, mut v: Vec<u16>) -> Vec<u16> {
 pub fn tournament() -> Html {
   let tournament = use_state(|| TournamentState {
     id: Uuid::new_v4(),
-    participants: 0,
+    participant: Pariticipant::new(),
     title: String::from("title"),
     tournament_type: TournamentType::Tournament,
     matches: Matches::new(0),
     status: TournamentStatus::Prepare,
   });
-  let participants = use_state(|| Participants::new());
   let cols = use_state(|| 0);
   let round = use_state(|| vec![]);
   let location = use_location().unwrap();
@@ -61,7 +49,6 @@ pub fn tournament() -> Html {
 
   use_effect_with_deps({
     let tournament = tournament.clone();
-    let participants = participants.clone();
     let cols = cols.clone();
     let round = round.clone();
     let uuid_str = location.pathname().split("/").last().unwrap().to_owned();
@@ -70,14 +57,11 @@ pub fn tournament() -> Html {
       wasm_bindgen_futures::spawn_local(async move {
         let uuid_value = Uuid::from_str(&uuid_str).unwrap();
         let tournament_state = get_tournament_detail(uuid_value).await.unwrap();
-        let participants = participants.clone();
         let mut partial_participants = HashSet::new();
   
         tournament.set(tournament_state.clone());
 
-        participants.set(Participants { list: vec![String::from(""); tournament_state.participants as usize] });
-
-        let cols_vec = to_round(tournament_state.participants, 1, vec![]);
+        let cols_vec = to_round(tournament_state.participant.count, 1, vec![]);
         cols.set(cols_vec.len() as u16);
         round.set(cols_vec.clone().iter().map(|r| {
           let matches = tournament_state.matches.clone();
@@ -153,36 +137,20 @@ pub fn tournament() -> Html {
           ActiveTab::Participant => html! {
             <div class="grid grid-cols-8">
               {
-                (0u16..tournament.participants).into_iter().map(|f| {
-                  // let list = (*participants.list).into_iter().map(|l| {
-                  //   l.clone()
-                  // }).collect::<Vec<String>>();
-                  let res = &(participants.list);
-
-                  html! {
-                    if res[f as usize].clone().trim().len() > 0 {
-                      <div>{res[f as usize].clone()}</div>
-                    } else {
-                      <input />
-                    }
+                (*tournament.participant.list).iter().map(|f| {
+                  match f {
+                    Some(player) => {
+                      html! {
+                        <div>{player.name.clone()}</div>
+                      }
+                    },
+                    None => {
+                      html! {
+                        <input />
+                      }
+                    },
                   }
                 }).collect::<Vec<Html>>()
-                // (0..*tournament.participants).collect().map(|f| {
-                //   html! {
-                //     <div>{f}</div>
-                
-                // }).collect::<Vec<Html>>()
-                // (*participants.list).into_iter().map(|f| {
-                //   console::log_1(&JsValue::from_str(&f));
-                //   html! {
-                //     if f.trim().len() > 0 {
-                //       <div>{f}</div>
-                //     } else {
-                //       <input />
-                //     }
-                //     // <div>{f}</div>
-                //   }
-                // }).collect::<Vec<Html>>()
               }
             </div>
           },
