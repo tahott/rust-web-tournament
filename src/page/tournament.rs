@@ -1,7 +1,10 @@
 use std::{str::FromStr, collections::HashSet};
 
+use gloo::utils::document;
 use serde::{Deserialize, Serialize};
 use uuid::{Uuid};
+use wasm_bindgen::{JsCast};
+use web_sys::{HtmlLiElement};
 use yew::prelude::*;
 use yew_router::{hooks::{use_location}, history::Location};
 
@@ -12,12 +15,23 @@ enum ActiveTab {
   Matches,
 }
 
-#[derive(Properties, PartialEq, Deserialize, Serialize)]
-pub struct Props {
-  pub participants: u8,
+#[derive(Clone)]
+struct Participants {
+  list: Vec<String>,
 }
 
-fn to_round(n: u8, count: u8, mut v: Vec<u8>) -> Vec<u8> {
+impl Participants {
+  pub fn new() -> Self {
+    Self { list: vec![] }
+  }
+}
+
+#[derive(Properties, PartialEq, Deserialize, Serialize)]
+pub struct Props {
+  pub participants: u16,
+}
+
+fn to_round(n: u16, count: u16, mut v: Vec<u16>) -> Vec<u16> {
   v.push(n / 2);
   match n > 2 {
     true => {
@@ -39,7 +53,7 @@ pub fn tournament() -> Html {
     matches: Matches::new(0),
     status: TournamentStatus::Prepare,
   });
-  let participants = use_state(|| vec![]);
+  let participants = use_state(|| Participants::new());
   let cols = use_state(|| 0);
   let round = use_state(|| vec![]);
   let location = use_location().unwrap();
@@ -56,12 +70,15 @@ pub fn tournament() -> Html {
       wasm_bindgen_futures::spawn_local(async move {
         let uuid_value = Uuid::from_str(&uuid_str).unwrap();
         let tournament_state = get_tournament_detail(uuid_value).await.unwrap();
+        let participants = participants.clone();
         let mut partial_participants = HashSet::new();
   
         tournament.set(tournament_state.clone());
 
+        participants.set(Participants { list: vec![String::from(""); tournament_state.participants as usize] });
+
         let cols_vec = to_round(tournament_state.participants, 1, vec![]);
-        cols.set(cols_vec.len() as u8);
+        cols.set(cols_vec.len() as u16);
         round.set(cols_vec.clone().iter().map(|r| {
           let matches = tournament_state.matches.clone();
 
@@ -83,8 +100,6 @@ pub fn tournament() -> Html {
             });
           });
 
-          participants.set(partial_participants.iter().map(|f| f.name.clone()).collect());
-
           html! {
             <Round rounds={*r} matches={players.clone()} />
           }
@@ -97,28 +112,38 @@ pub fn tournament() -> Html {
   let onclick = |tab: ActiveTab| {
     let active_tab = active_tab.clone();
 
-    match tab {
-      ActiveTab::Participant => {
-        Callback::from(move |_| {
+
+    Callback::from(move |e: MouseEvent| {
+      let t_nav = document().get_elements_by_class_name("t-nav");
+
+      for i in 0..t_nav.length() {
+        let nav = t_nav.get_with_index(i).unwrap().dyn_into::<HtmlLiElement>().unwrap();
+        nav.set_class_name("t-nav mr-2");
+      };
+
+      match tab {
+        ActiveTab::Participant => {
+          let target = e.target().unwrap().dyn_into::<HtmlLiElement>().unwrap();
+          target.set_class_name("t-nav mr-2 text-yellow-500");
           active_tab.set(ActiveTab::Participant);
-        })
-      },
-      ActiveTab::Matches => {
-        Callback::from(move |_| {
+        },
+        ActiveTab::Matches => {
+          let target = e.target().unwrap().dyn_into::<HtmlLiElement>().unwrap();
+          target.set_class_name("t-nav mr-2 text-yellow-500");
           active_tab.set(ActiveTab::Matches);
-        })
-      },
-    }
+        },
+      }
+    })
   };
 
   html!(
     <div class="container mx-auto m-2 p-4">
       <div class="border-b border-gray-200 dark:border-gray-700">
-        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-          <li class="mr-2" onclick={onclick(ActiveTab::Participant)}>
+        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400 cursor-pointer">
+          <li class="t-nav mr-2" onclick={onclick(ActiveTab::Participant)}>
             {"참가자"}
           </li>
-          <li class="mr-2" onclick={onclick(ActiveTab::Matches)}>
+          <li class="t-nav mr-2 text-yellow-500" onclick={onclick(ActiveTab::Matches)}>
             {"대진표"}
           </li>
         </ul>
@@ -126,13 +151,38 @@ pub fn tournament() -> Html {
       {
         match *active_tab {
           ActiveTab::Participant => html! {
-            <div>
+            <div class="grid grid-cols-8">
               {
-                (*participants).clone().into_iter().map(|f| {
+                (0u16..tournament.participants).into_iter().map(|f| {
+                  // let list = (*participants.list).into_iter().map(|l| {
+                  //   l.clone()
+                  // }).collect::<Vec<String>>();
+                  let res = &(participants.list);
+
                   html! {
-                    <div>{f}</div>
+                    if res[f as usize].clone().trim().len() > 0 {
+                      <div>{res[f as usize].clone()}</div>
+                    } else {
+                      <input />
+                    }
                   }
                 }).collect::<Vec<Html>>()
+                // (0..*tournament.participants).collect().map(|f| {
+                //   html! {
+                //     <div>{f}</div>
+                
+                // }).collect::<Vec<Html>>()
+                // (*participants.list).into_iter().map(|f| {
+                //   console::log_1(&JsValue::from_str(&f));
+                //   html! {
+                //     if f.trim().len() > 0 {
+                //       <div>{f}</div>
+                //     } else {
+                //       <input />
+                //     }
+                //     // <div>{f}</div>
+                //   }
+                // }).collect::<Vec<Html>>()
               }
             </div>
           },

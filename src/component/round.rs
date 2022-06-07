@@ -5,8 +5,8 @@ use crate::{component::RoundMatch, types::{Player}};
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
-  pub rounds: u8,
-  pub matches: HashMap<u8, Vec<Player>>,
+  pub rounds: u16,
+  pub matches: HashMap<u16, Vec<Player>>,
 }
 
 #[function_component(Round)]
@@ -15,7 +15,7 @@ pub fn round(props: &Props) -> Html {
   html! {
     <div class="flex flex-col justify-evenly">
       {
-        (0..props.rounds).collect::<Vec<u8>>().iter().map(|i| {
+        (0..props.rounds).collect::<Vec<u16>>().iter().map(|i| {
           let players = match props.matches.get(i) {
             Some(p) => p.clone(),
             None => Vec::with_capacity(2),

@@ -44,9 +44,9 @@ pub enum MatchEnums {
 }
 
 #[derive(Serialize, Deserialize, Clone)]
-pub struct Matches(pub HashMap<MatchEnums, HashMap<u8, Vec<Player>>>);
+pub struct Matches(pub HashMap<MatchEnums, HashMap<u16, Vec<Player>>>);
 impl Matches {
-  pub fn new(participants: u8) -> Self {
+  pub fn new(participants: u16) -> Self {
     let match_enum_vec = vec![
       (MatchEnums::Final, 1),
       (MatchEnums::SemiFinal, 2),
@@ -63,7 +63,7 @@ impl Matches {
     while n <= (participants as f32).log2().ceil() {
       let mut value_hash_map = HashMap::new();
       for i in 0..match_enum_vec[cnt].1 {
-        value_hash_map.insert(i as u8, vec![
+        value_hash_map.insert(i as u16, vec![
           Player::new(""),
           Player::new(""),
         ]);
@@ -82,7 +82,7 @@ pub struct TournamentState {
   pub id: Uuid,
   #[serde(rename="tournamentType")]
   pub tournament_type: TournamentType,
-  pub participants: u8,
+  pub participants: u16,
   pub title: String,
   pub matches: Matches,
   pub status: TournamentStatus,

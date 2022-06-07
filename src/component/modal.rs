@@ -26,9 +26,9 @@ pub fn Modal(props: &ModalProps) -> Html {
       let tournament = TournamentState {
         id: Uuid::new_v4(),
         tournament_type: TournamentType::from_str(&val).unwrap(),
-        participants: participants as u8,
+        participants: participants as u16,
         title,
-        matches: Matches::new(participants as u8),
+        matches: Matches::new(participants as u16),
         status: TournamentStatus::Prepare,
       };
   

@@ -6,7 +6,7 @@ use crate::types::Player;
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
-  pub round_match: u8,
+  pub round_match: u16,
   pub players: HashMap<Player, u8>,
 }
 

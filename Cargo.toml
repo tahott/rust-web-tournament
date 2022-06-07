@@ -28,6 +28,9 @@ features = [
   "HtmlCollection",
   "HtmlSelectElement",
   "HtmlInputElement",
+  "HtmlLiElement",
+  "MouseEvent",
+  "EventTarget",
 ]
 
 [dependencies.uuid]

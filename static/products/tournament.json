@@ -6,10 +6,65 @@
     "tournamentType": "tournament",
     "status": "in_progress",
     "matches": {
-      "round_of_16": {},
-      "quarter_final": {},
-      "semi_final": {},
-      "final": {}
+      "round_of_16": {
+        "0": [
+          { "name": "" },
+          { "name": "" }
+        ],
+        "1": [
+          { "name": "" },
+          { "name": "" }
+        ],
+        "2": [
+          { "name": "" },
+          { "name": "" }
+        ],
+        "3": [
+          { "name": "" },
+          { "name": "" }
+        ],
+        "4": [
+          { "name": "" },
+          { "name": "" }
+        ],
+        "5": [
+          { "name": "" },
+          { "name": "" }
+        ],
+        "6": [
+          { "name": "" },
+          { "name": "" }
+        ],
+        "7": [
+          { "name": "" },
+          { "name": "" }
+        ]
+      },
+      "quarter_final": {
+        "0": [
+          { "name": "" },
+          { "name": "" }
+        ],
+        "1": [
+          { "name": "" },
+          { "name": "" }
+        ],
+        "2": [
+          { "name": "" },
+          { "name": "" }
+        ],
+        "3": [
+          { "name": "" },
+          { "name": "" }
+        ]
+      },
+      "semi_final": {
+        "0": [],
+        "1": []
+      },
+      "final": {
+        "0": []
+      }
     }
   },
   {
