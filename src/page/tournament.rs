@@ -135,7 +135,7 @@ pub fn tournament() -> Html {
       {
         match *active_tab {
           ActiveTab::Participant => html! {
-            <div class="grid grid-cols-8">
+            <div class="grid grid-cols-8 gap-4 mt-2">
               {
                 (*tournament.participant.list).iter().map(|f| {
                   match f {
@@ -146,7 +146,10 @@ pub fn tournament() -> Html {
                     },
                     None => {
                       html! {
-                        <input />
+                        <div class="flex flex-row border border-solid rounded-md p-1 items-center">
+                          <input class="w-full border-none grow-[2] focus:outline-none" />
+                          <input type="checkbox" role="switch" />
+                        </div>
                       }
                     },
                   }
